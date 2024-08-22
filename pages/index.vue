@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="w-full flex items-center justify-center mt-6 mb-3">
+    <div class="w-full flex items-center justify-center mt-6 mb-3 px-2">
       <img
         id="ibwImgHeaderTitleComparison"
         :src="
@@ -10,15 +10,17 @@
         "
         width="35px"
       />
-      <p class="mx-1 text-3xl font-bold">
+      <p class="mx-1 md:text-3xl font-bold text-xl">
         مقایسه قیمت خریدوفروش {{ currency == "btc" ? "بیت کوین" : "تتر" }} در
         صرافی های ارز دیجیتال
       </p>
     </div>
     <div class="flex flex-row">
-      <div class="basis-2/5"></div>
+      <div class="md:basis-2/5"></div>
 
-      <div class="relative inline-block text-left basis-1/5">
+      <div
+        class="relative inline-block text-left md:basis-2/5 lg:basis-1/5 basis-4/5"
+      >
         <drop-down-menu :items="coins" @selectCurrency="selectCurrency" />
       </div>
       <div class="basis-1/5 flex items-center px-1">
@@ -26,26 +28,34 @@
           {{ persianTime }}
         </div>
       </div>
-      <div class="basis-1/5"></div>
+      <div class="md:basis-1/5"></div>
     </div>
-    <div class="mx-16">
-      <div class="flex flex-row mx-16 my-2">
-        <div class="basis-1/6 flex justify-start px-4">صرافی</div>
-        <div class="basis-1/6 flex justify-center font-bold">
+    <div class="lg:mx-16">
+      <div class="flex flex-row lg:mx-16 my-2">
+        <div
+          class="basis-4/12 md:basis-1/6 flex justify-start px-4 text-sm md:text-base"
+        >
+          صرافی
+        </div>
+        <div
+          class="basis-4/12 md:basis-1/6 flex justify-center font-bold text-sm md:text-base"
+        >
           فروش به شما<span class="mx-1">▲</span>
         </div>
-        <div class="basis-1/6 flex justify-center font-bold">
+        <div
+          class="basis-4/12 md:basis-1/6 flex justify-center font-bold text-sm md:text-base"
+        >
           خرید از شما<span class="mx-1">⇅</span>
         </div>
-        <div class="basis-1/6 flex justify-center">کارمزد</div>
-        <div class="basis-1/6 flex justify-center">نوع صرافی</div>
-        <div class="basis-1/6 flex justify-center">تعداد ارزها</div>
-        <div class="basis-1/6 flex justify-center">معامله</div>
+        <div class="basis-1/6 md:flex justify-center hidden">کارمزد</div>
+        <div class="basis-1/6 md:flex justify-center hidden">نوع صرافی</div>
+        <div class="basis-1/6 md:flex justify-center hidden">تعداد ارزها</div>
+        <div class="basis-1/6 md:flex justify-center hidden">معامله</div>
       </div>
     </div>
     <div v-for="exchange in exchanges" :key="exchange.title">
       <price-container
-        class="mx-16 my-2"
+        class="mx-2 lg:mx-16 my-2"
         v-model:model="exchange.value"
         v-model:currency="currency"
       />
@@ -57,6 +67,7 @@
 import { ref } from "vue";
 
 const searchInput = ref();
+
 const sellPrice = ref();
 const buyPrice = ref();
 const time = ref(60);
@@ -143,20 +154,11 @@ async function getExchangesPrices() {
       response.exchangesPrices.nobitex.prices.btc.irt;
     exchanges.value[0].value.usdt =
       response.exchangesPrices.nobitex.prices.usdt.irt;
-
-    // sortExchanges("descending");
-
     startTimer();
   } catch {
     console.error("Error:", error);
   }
 }
-// function sortExchanges(sortType,priceType){
-
-//   exchanges.sort((a,b)=>{
-//     return a[currency.value][priceType]
-//   })
-// }
 
 onMounted(() => {
   getExchangesPrices();
