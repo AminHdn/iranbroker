@@ -183,6 +183,11 @@ function sortDescending() {
 
 function selectCurrency(item) {
   currency.value = item;
+  if (sortPriceType.value == "ascending") {
+    sortAscending();
+  } else {
+    sortDescending();
+  }
 }
 const stopTimer = () => {
   clearInterval(timer);
