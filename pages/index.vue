@@ -38,14 +38,40 @@
           صرافی
         </div>
         <div
-          class="basis-4/12 md:basis-1/6 flex justify-center font-bold text-sm md:text-base"
+          class="basis-4/12 md:basis-1/6 flex justify-center font-bold text-sm md:text-base cursor-pointer"
+          @click="changeSortPrice('sell')"
         >
-          فروش به شما<span class="mx-1">▲</span>
+          فروش به شما
+          <span
+            class="mx-1"
+            v-if="sortType == 'sell' && sortPriceType == 'descending'"
+          >
+            ▲
+          </span>
+          <span
+            id="ibwSellSortMarker"
+            v-else-if="sortType == 'sell' && sortPriceType == 'ascending'"
+          >
+            ▼
+          </span>
+          <span class="mx-1" v-else-if="sortType == 'buy'">⇅</span>
         </div>
         <div
-          class="basis-4/12 md:basis-1/6 flex justify-center font-bold text-sm md:text-base"
+          class="basis-4/12 md:basis-1/6 flex justify-center font-bold text-sm md:text-base cursor-pointer"
+          @click="changeSortPrice('buy')"
         >
-          خرید از شما<span class="mx-1">⇅</span>
+          خرید از شما
+          <span
+            class="mx-1"
+            v-if="sortType == 'buy' && sortPriceType == 'descending'"
+            >▲</span
+          >
+          <span
+            id="ibwSellSortMarker"
+            v-else-if="sortType == 'buy' && sortPriceType == 'ascending'"
+            >▼</span
+          >
+          <span class="mx-1" v-else-if="sortType == 'sell'">⇅</span>
         </div>
         <div class="basis-1/6 md:flex justify-center hidden">کارمزد</div>
         <div class="basis-1/6 md:flex justify-center hidden">نوع صرافی</div>
@@ -67,7 +93,8 @@
 import { ref } from "vue";
 
 const searchInput = ref();
-
+const sortType = ref("sell");
+const sortPriceType = ref("descending");
 const sellPrice = ref();
 const buyPrice = ref();
 const time = ref(60);
@@ -120,10 +147,42 @@ const startTimer = () => {
   }, 1000);
 };
 
+function changeSortPrice(item) {
+  if (item == sortType.value) {
+    if (sortPriceType.value == "descending") {
+      sortPriceType.value = "ascending";
+      sortAscending();
+    } else {
+      sortPriceType.value = "descending";
+      sortDescending();
+    }
+  } else {
+    sortType.value = item;
+    if (sortPriceType.value == "ascending") {
+      sortAscending();
+    } else {
+      sortDescending();
+    }
+  }
+}
+function sortAscending() {
+  exchanges.value.sort((a, b) => {
+    return (
+      +a.value[currency.value][sortType.value] -
+      +b.value[currency.value][sortType.value]
+    );
+  });
+}
+function sortDescending() {
+  exchanges.value.sort(
+    (a, b) =>
+      +b.value[currency.value][sortType.value] -
+      +a.value[currency.value][sortType.value]
+  );
+}
+
 function selectCurrency(item) {
   currency.value = item;
-  console.log("currency", item);
-  console.log("currency", currency.value);
 }
 const stopTimer = () => {
   clearInterval(timer);
