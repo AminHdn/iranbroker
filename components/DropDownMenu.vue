@@ -1,7 +1,7 @@
 <template>
   <div>
     <button
-      @click="toggleMenu"
+      @click.stop="toggleMenu"
       class="w-full h-12 rounded-md border border-black shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
     >
       <div class="flex flex-row px-1">
@@ -45,6 +45,7 @@
             id="fname"
             name="fname"
             class="outline outline-1 outline-slate-200 my-1 w-full p-2 text-black"
+            @click="handleInputClick"
           /><br />
         </div>
         <div class="divider"></div>
@@ -69,18 +70,22 @@
 </template>
 
 <script setup>
-const emit = defineEmits(["selectCurrency"]);
+const emit = defineEmits(["selectCurrency", "toggleMenu"]);
 const props = defineProps(["items"]);
 const searchInput = ref("");
-
-const isOpen = ref(false);
+// const isOpen = ref(false);
+const isOpen = defineModel("model");
 
 function toggleMenu() {
-  isOpen.value = !isOpen.value;
+  emit("toggleMenu");
 }
 function selectCurrency(currency) {
   emit("selectCurrency", currency);
   toggleMenu();
+}
+
+function handleInputClick(event) {
+  event.stopPropagation();
 }
 </script>
 

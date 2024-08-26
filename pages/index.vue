@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="closeMenu">
     <div class="w-full flex items-center justify-center mt-6 mb-3 px-2">
       <img
         id="ibwImgHeaderTitleComparison"
@@ -21,7 +21,13 @@
       <div
         class="relative inline-block text-left md:basis-2/5 lg:basis-1/5 basis-4/5"
       >
-        <drop-down-menu :items="coins" @selectCurrency="selectCurrency" />
+        <drop-down-menu
+          :items="coins"
+          @selectCurrency="selectCurrency"
+          v-model:model="isOpen"
+          @toggleMenu="toggleMenu"
+          ref="menu"
+        />
       </div>
       <div class="basis-1/5 flex items-center px-1">
         <div class="container-timer shadow-xl drop-shadow-xl">
@@ -100,6 +106,7 @@ const buyPrice = ref();
 const time = ref(60);
 const loading = ref(true);
 const currency = ref("btc");
+const isOpen = ref(false);
 const exchanges = ref([
   ref({
     img: "https://iranbroker.net/wp-content/plugins/iranbroker-widget/assets/public/img/exchanges/nobitex.webp",
@@ -146,7 +153,16 @@ const startTimer = () => {
     }
   }, 1000);
 };
+function toggleMenu() {
+  isOpen.value = !isOpen.value;
+}
 
+function closeMenu(event) {
+  const menu = ref(null);
+  if (!menu.value || !menu.value.contains(event.target)) {
+    isOpen.value = false;
+  }
+}
 function changeSortPrice(item) {
   if (item == sortType.value) {
     if (sortPriceType.value == "descending") {
